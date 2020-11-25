@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:quiztest/services/user.dart';
+import 'package:quiztest/views/challenge/join_screen.dart';
 import 'package:quiztest/views/components/quiz_list.dart';
 import '../components/appbar.dart';
 import 'package:quiztest/services/api_manager.dart';
@@ -12,6 +14,7 @@ class HomePage extends StatefulWidget {
 class _HomePageState extends State<HomePage> {
   var _init = true;
   var _isLoading = false;
+  String userID;
   List<Topic> listTopic;
 
   @override
@@ -63,11 +66,15 @@ class _HomePageState extends State<HomePage> {
   }
 }
 
-class EnterCode extends StatelessWidget {
-  const EnterCode({
-    Key key,
-  }) : super(key: key);
+class EnterCode extends StatefulWidget {
+  const EnterCode({Key key}) : super(key: key);
 
+  @override
+  _EnterCodeState createState() => _EnterCodeState();
+}
+
+class _EnterCodeState extends State<EnterCode> {
+  var _controller = TextEditingController();
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -90,6 +97,7 @@ class EnterCode extends StatelessWidget {
             height: 30,
             margin: EdgeInsets.only(bottom: 10),
             child: TextField(
+              controller: _controller,
               onChanged: (value) {},
               decoration: InputDecoration(
                   contentPadding: EdgeInsets.only(top: 5, left: 20),
@@ -107,7 +115,19 @@ class EnterCode extends StatelessWidget {
                 color: Color.fromRGBO(146, 61, 199, 1),
                 borderRadius: BorderRadius.circular(5)),
             child: FlatButton(
-              onPressed: () {},
+              onPressed: () async {
+                await API_Manager().joinGame(_controller.text).then((value) {
+                  print(value);
+                  if (value == "success") {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (context) => JoinScreen(
+                                  hostCode: _controller.text,
+                                )));
+                  }
+                }).catchError((e) => print(e));
+              },
               child: Text(
                 "Join a game",
                 style: TextStyle(fontSize: 14, color: Colors.white),

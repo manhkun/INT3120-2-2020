@@ -21,9 +21,10 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
   List<dynamic> listParticipants = [];
   @override
   void initState() {
-   
     API_Manager().getParticipants(widget.hostCode).then((value) {
-      listParticipants = value["MapParticipant"].values.toList();
+      setState(() {
+        listParticipants = value["MapParticipant"].values.toList();
+      });
       print(value.length);
     });
     super.initState();

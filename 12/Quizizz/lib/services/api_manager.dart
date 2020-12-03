@@ -243,4 +243,12 @@ class API_Manager {
       print("delete host success");
     }
   }
+
+  Future<void> startChallenge(String code) async {
+    var urlStartChallenge = url + "/v1/host/start/" + code;
+    final response = await http.put(urlStartChallenge);
+    if (response.statusCode == 200) {
+      print("Start successfully!");
+    }
+  }
 }

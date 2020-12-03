@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_redux/flutter_redux.dart';
+import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:quiztest/models/models.dart';
 import 'package:quiztest/services/api_manager.dart';
 import 'package:quiztest/views/play_screen/pauseWhilePlaying.dart';
@@ -21,7 +22,10 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
   @override
   void initState() {
     API_Manager().getMapParticipants(widget.hostCode).then((value) {
-      listParticipants = value;
+      setState(() {
+        listParticipants = value;
+      });
+      ;
       print(value.length);
     });
     super.initState();
@@ -120,6 +124,7 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
               ),
               GestureDetector(
                 onTap: () {
+                  API_Manager().startChallenge(widget.hostCode);
                   Navigator.push(
                       context,
                       MaterialPageRoute(
@@ -141,68 +146,70 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
                   ),
                 ),
               ),
-              Container(
-                width: 290,
-                height: 86,
-                margin: EdgeInsets.symmetric(vertical: 10),
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(196, 196, 196, 0.4),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    Container(
-                      child: StoreConnector<String, String>(
-                        converter: (store) => store.state,
-                        builder: (context, store) => Text(
-                          store,
-                          style: TextStyle(color: Colors.white, fontSize: 20),
+              // Container(
+              //   width: 290,
+              //   height: 86,
+              //   margin: EdgeInsets.symmetric(vertical: 10),
+              //   alignment: Alignment.center,
+              //   decoration: BoxDecoration(
+              //       color: Color.fromRGBO(196, 196, 196, 0.4),
+              //       borderRadius: BorderRadius.circular(10)),
+              //   child: Row(
+              //     mainAxisAlignment: MainAxisAlignment.spaceAround,
+              //     children: [
+              //       Container(
+              //         child: StoreConnector<String, String>(
+              //           converter: (store) => store.state,
+              //           builder: (context, store) => Text(
+              //             store,
+              //             style: TextStyle(color: Colors.white, fontSize: 20),
+              //           ),
+              //         ),
+              //       ),
+              //       Container(
+              //         child: Image(
+              //           image: AssetImage('assets/icons/officer.png'),
+              //           width: 45,
+              //           height: 45,
+              //         ),
+              //       )
+              //     ],
+              //   ),
+              // ),
+              listParticipants.length == 0
+                  ? SpinKitDualRing(color: Colors.blue)
+                  : SizedBox(
+                      width: 290,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: listParticipants.length,
+                        itemBuilder: (context, index) => Container(
+                          width: 290,
+                          height: 86,
+                          margin: EdgeInsets.symmetric(vertical: 10),
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                              color: Color.fromRGBO(196, 196, 196, 0.4),
+                              borderRadius: BorderRadius.circular(10)),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            children: [
+                              Container(
+                                  child: Text(listParticipants[index],
+                                      style: TextStyle(
+                                          color: Colors.white, fontSize: 20))),
+                              Container(
+                                child: Image(
+                                  image: AssetImage('assets/icons/officer.png'),
+                                  width: 45,
+                                  height: 45,
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
                     ),
-                    Container(
-                      child: Image(
-                        image: AssetImage('assets/icons/officer.png'),
-                        width: 45,
-                        height: 45,
-                      ),
-                    )
-                  ],
-                ),
-              ),
-              SizedBox(
-                width: 290,
-                child: ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: listParticipants.length,
-                  itemBuilder: (context, index) => Container(
-                    width: 290,
-                    height: 86,
-                    margin: EdgeInsets.symmetric(vertical: 10),
-                    alignment: Alignment.center,
-                    decoration: BoxDecoration(
-                        color: Color.fromRGBO(196, 196, 196, 0.4),
-                        borderRadius: BorderRadius.circular(10)),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Container(
-                            child: Text(listParticipants[index],
-                                style: TextStyle(
-                                    color: Colors.white, fontSize: 20))),
-                        Container(
-                          child: Image(
-                            image: AssetImage('assets/icons/officer.png'),
-                            width: 45,
-                            height: 45,
-                          ),
-                        )
-                      ],
-                    ),
-                  ),
-                ),
-              ),
               Center(
                 child: IconButton(
                     icon: Icon(

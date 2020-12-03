@@ -4,6 +4,7 @@ import 'package:quiztest/models/models.dart';
 import 'package:quiztest/services/api_manager.dart';
 import 'package:quiztest/views/play_screen/pauseWhilePlaying.dart';
 import 'package:quiztest/main.dart';
+import 'package:quiztest/views/play_screen/quiz_game.dart';
 
 class EnterChallengeRoom extends StatefulWidget {
   const EnterChallengeRoom({Key key, this.hostCode, this.quiz})
@@ -118,17 +119,27 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
                   style: TextStyle(color: Colors.black, fontSize: 24),
                 ),
               ),
-              Container(
-                margin: EdgeInsets.symmetric(vertical: 10),
-                width: 162,
-                height: 52,
-                alignment: Alignment.center,
-                decoration: BoxDecoration(
-                    color: Color.fromRGBO(177, 72, 180, 1),
-                    borderRadius: BorderRadius.circular(10)),
-                child: Text(
-                  "Start game",
-                  style: TextStyle(color: Colors.white, fontSize: 20),
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => QuizPage(
+                                quiz: widget.quiz,
+                              )));
+                },
+                child: Container(
+                  margin: EdgeInsets.symmetric(vertical: 10),
+                  width: 162,
+                  height: 52,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                      color: Color.fromRGBO(177, 72, 180, 1),
+                      borderRadius: BorderRadius.circular(10)),
+                  child: Text(
+                    "Start game",
+                    style: TextStyle(color: Colors.white, fontSize: 20),
+                  ),
                 ),
               ),
               Container(
@@ -161,37 +172,35 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
                   ],
                 ),
               ),
-              ListView.builder(
-                shrinkWrap: true,
-                itemCount: listParticipants.length,
-                itemBuilder: (context, index) => Container(
-                  width: 290,
-                  height: 86,
-                  margin: EdgeInsets.symmetric(vertical: 10),
-                  alignment: Alignment.center,
-                  decoration: BoxDecoration(
-                      color: Color.fromRGBO(196, 196, 196, 0.4),
-                      borderRadius: BorderRadius.circular(10)),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceAround,
-                    children: [
-                      Container(
-                        child: StoreConnector<String, String>(
-                          converter: (store) => store.state,
-                          builder: (context, store) => Text(
-                            store,
-                            style: TextStyle(color: Colors.white, fontSize: 20),
+              SizedBox(
+                width: 290,
+                child: ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: listParticipants.length,
+                  itemBuilder: (context, index) => Container(
+                    width: 290,
+                    height: 86,
+                    margin: EdgeInsets.symmetric(vertical: 10),
+                    alignment: Alignment.center,
+                    decoration: BoxDecoration(
+                        color: Color.fromRGBO(196, 196, 196, 0.4),
+                        borderRadius: BorderRadius.circular(10)),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceAround,
+                      children: [
+                        Container(
+                            child: Text(listParticipants[index],
+                                style: TextStyle(
+                                    color: Colors.white, fontSize: 20))),
+                        Container(
+                          child: Image(
+                            image: AssetImage('assets/icons/officer.png'),
+                            width: 45,
+                            height: 45,
                           ),
-                        ),
-                      ),
-                      Container(
-                        child: Image(
-                          image: AssetImage('assets/icons/officer.png'),
-                          width: 45,
-                          height: 45,
-                        ),
-                      )
-                    ],
+                        )
+                      ],
+                    ),
                   ),
                 ),
               ),

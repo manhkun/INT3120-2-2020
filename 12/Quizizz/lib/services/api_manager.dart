@@ -243,6 +243,7 @@ class API_Manager {
     if (response.statusCode == 200) {
       return json.decode(response.body);
     }
+    return "";
   }
 
   Future<void> deleteHost(String code) async {

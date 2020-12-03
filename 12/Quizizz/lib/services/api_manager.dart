@@ -208,18 +208,28 @@ class API_Manager {
     }
   }
 
-  Future<List<dynamic>> getMapParticipants(String code) async {
+  Future<Map<String, dynamic>> getParticipants(String code) async {
     var urlGetMapParticipant = url + "/v1/host/GetAHost/" + code;
     final response = await http.get(urlGetMapParticipant);
     if (response.statusCode == 200) {
       Map<String, dynamic> res = json.decode(response.body);
-      print(res);
-      Map<String, dynamic> mapParticipants = res['MapParticipant'];
-      print(mapParticipants);
-      print(mapParticipants.values.toList());
-      return mapParticipants.values.toList();
+      // print(res);
+      // Map<String, dynamic> mapParticipants = res['MapParticipant'];
+      // print(mapParticipants);
+      // print(mapParticipants.values.toList());
+      return res;
     }
   }
+
+  // Future<bool> checkStartGame(String code) async {
+  //   var urlGetMapParticipant = url + "/v1/host/GetAHost/" + code;
+  //   final response = await http.get(urlGetMapParticipant);
+  //   if (response.statusCode == 200) {
+  //     Map<String, dynamic> res = json.decode(response.body);
+  //     print(res["Started"]);
+  //     return res["Started"];
+  //   }
+  // }
 
   Future<String> joinGame(String code) async {
     final pref = await SharedPreferences.getInstance();

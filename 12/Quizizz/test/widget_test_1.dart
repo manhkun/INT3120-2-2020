@@ -13,7 +13,6 @@ void main() {
     EnterCode enterCode = new EnterCode();
     await tester.pumpWidget(makeTesableWidget(child: enterCode));
 
-    expect(find.text("Join a game"), findsOneWidget);
-
+    expect(find.text("Join a game"), findsNothing);
   });
 }

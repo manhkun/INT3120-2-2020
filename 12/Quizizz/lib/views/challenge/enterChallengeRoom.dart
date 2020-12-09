@@ -128,6 +128,7 @@ class _EnterChallengeRoomState extends State<EnterChallengeRoom> {
                       context,
                       MaterialPageRoute(
                           builder: (context) => QuizPage(
+                                hostCode: widget.hostCode,
                                 quiz: widget.quiz,
                               )));
                 },

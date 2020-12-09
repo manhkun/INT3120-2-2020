@@ -261,4 +261,24 @@ class API_Manager {
       print("Start successfully!");
     }
   }
+
+  Future<void> postScore(String hostCode, int score) async {
+    final pref = await SharedPreferences.getInstance();
+    final userId = pref.getString("userId");
+    var urlPostScore = "$url/v1/host/$hostCode/PostScore";
+    Map<String, dynamic> postBody = {
+      "code": hostCode,
+      "score": score,
+      "userID": userId
+    };
+    String body = json.encode(postBody);
+    final encoding = Encoding.getByName('utf-8');
+    final headers = {'Content-Type': 'application/json'};
+    final response = await http.put(urlPostScore,
+        headers: headers, body: body, encoding: encoding);
+    if (response.statusCode == 200) {
+      print("Post score successfully!");
+    }
+    return;
+  }
 }

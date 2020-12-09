@@ -19,14 +19,16 @@ List<int> correctAns = new List<int>();
 String _userID;
 String _saveGameID;
 var _isLoading = false;
+int _score = 0;
 
 class QuizPage extends StatefulWidget {
-  QuizPage({this.quiz, this.topic, this.ans, this.saveGameID});
+  QuizPage({this.quiz, this.topic, this.ans, this.saveGameID, this.hostCode});
 
   final Quiz quiz;
   final Topic topic;
   final List<int> ans;
   final String saveGameID;
+  final String hostCode;
   @override
   _QuizPageState createState() => _QuizPageState();
 }
@@ -78,6 +80,7 @@ class _QuizPageState extends State<QuizPage> {
   @override
   Widget build(BuildContext context) {
     return QuizGame(
+      hostCode: widget.hostCode,
       quiz: widget.quiz,
     );
   }
@@ -87,9 +90,11 @@ class QuizGame extends StatefulWidget {
   QuizGame({
     this.totalQs,
     this.quiz,
+    this.hostCode,
   });
   final int totalQs;
   final Quiz quiz;
+  final String hostCode;
   @override
   _QuizGameState createState() => _QuizGameState();
 }
@@ -98,7 +103,13 @@ class _QuizGameState extends State<QuizGame> {
   @override
   void initState() {
     _checkChoose = false;
+
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 
   @override
@@ -128,6 +139,7 @@ class _QuizGameState extends State<QuizGame> {
                               "-$_currentQs",
                     ),
                     ListChoices(
+                      hostCode: widget.hostCode,
                       size: size,
                       question: quest[_currentQs],
                       quiz: widget.quiz,
@@ -139,18 +151,22 @@ class _QuizGameState extends State<QuizGame> {
 }
 
 class ListChoices extends StatefulWidget {
-  const ListChoices({Key key, @required this.size, this.question, this.quiz})
+  const ListChoices(
+      {Key key, @required this.size, this.question, this.quiz, this.hostCode})
       : super(key: key);
 
   final Size size;
   final Questional question;
   final Quiz quiz;
+  final String hostCode;
 
   @override
   _ListChoicesState createState() => _ListChoicesState();
 }
 
 class _ListChoicesState extends State<ListChoices> {
+  int _countTime;
+  Timer _timer;
   var _isCorrect;
   var _isChoose;
   var choices = [];
@@ -159,6 +175,8 @@ class _ListChoicesState extends State<ListChoices> {
 
   @override
   void initState() {
+    _countTime = 10;
+    startCountTime();
     _isCorrect = [false, false, false, false];
     _isChoose = [false, false, false, false];
     _isCorrect[widget.question.answer - 1] = true;
@@ -172,12 +190,31 @@ class _ListChoicesState extends State<ListChoices> {
     super.initState();
   }
 
+  void startCountTime() {
+    const onesSec = const Duration(seconds: 1);
+    _timer = new Timer.periodic(onesSec, (Timer timer) {
+      if (_countTime == 0) {
+        setState(() {
+          timer.cancel();
+        });
+      } else {
+        _countTime--;
+      }
+    });
+  }
+
   @override
   void dispose() {
+    _timer.cancel();
     super.dispose();
   }
 
   void nextQs() {
+    if (_countTime > 5)
+      _score += 50;
+    else
+      _score += 100 - _countTime * 10;
+    print(_score);
     if (_currentQs < widget.quiz.numberOfQuestion - 1) {
       setState(() {
         Timer(Duration(seconds: 1), () {
@@ -197,10 +234,12 @@ class _ListChoicesState extends State<ListChoices> {
           for (int i = 0; i < correctAns.length; i++) {
             if (answer[i] == correctAns[i]) correctCount++;
           }
+          API_Manager().postScore(widget.hostCode, _score);
           Navigator.pushReplacement(
               context,
               new MaterialPageRoute(
                   builder: (context) => EndQuiz(
+                        score: _score,
                         key: const Key("endQuiz"),
                         correctAns: correctCount,
                         incorrectAns: _totalQs - correctCount,

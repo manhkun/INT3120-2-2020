@@ -13,6 +13,7 @@ class EndQuiz extends StatefulWidget {
       this.topic,
       this.quizID,
       this.saveGameID,
+      this.score,
       this.key});
   final Key key;
   final int correctAns;
@@ -20,6 +21,7 @@ class EndQuiz extends StatefulWidget {
   final Topic topic;
   final String quizID;
   final String saveGameID;
+  final int score;
 
   @override
   _EndQuizState createState() => _EndQuizState();
@@ -91,6 +93,7 @@ class _EndQuizState extends State<EndQuiz> {
             PauseExit(),
             FindQuiz(size: size),
             Result(
+              score: widget.score,
               size: size,
               correct: widget.correctAns,
               inccorect: widget.incorrectAns,
@@ -143,12 +146,14 @@ class Result extends StatelessWidget {
       {Key key,
       @required this.size,
       @required this.correct,
-      @required this.inccorect})
+      @required this.inccorect,
+      this.score})
       : super(key: key);
 
   final Size size;
   final int correct;
   final int inccorect;
+  final int score;
 
   @override
   Widget build(BuildContext context) {
@@ -307,7 +312,7 @@ class Result extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "5470",
+                          "$score",
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,

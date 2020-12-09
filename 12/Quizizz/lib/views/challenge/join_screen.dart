@@ -63,6 +63,7 @@ class _JoinScreenState extends State<JoinScreen> {
             context,
             MaterialPageRoute(
                 builder: (context) => QuizPage(
+                      hostCode: widget.hostCode,
                       quiz: quiz,
                     )))
         : SafeArea(
